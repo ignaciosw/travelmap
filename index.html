@@ -9,10 +9,12 @@
 		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="js/jquery-jvectormap-2.0.4.min.js"></script>
 		<script src="js/gdp-data.js"></script>
+		<script src="js/countries.js"></script>
 		<script src="js/jquery-jvectormap-world-mill-en.js"></script>
 		<link rel="stylesheet" media="all" href="css/jquery-jvectormap-2.0.4.css" />
 		<script>
 		var mapObj;
+		
 	    $(document).ready(function () {
 			$('#world-map').vectorMap(wrld);
 			mapObj = $('#world-map').vectorMap('get', 'mapObject');
@@ -20,26 +22,36 @@
 		
 	    var wrld = {
 		  map: 'world_mill_en',
-		  regionStyle: {
+		  //selectedRegions: gdpData,
+		  /*regionStyle: {
 		    hover: {
 		        "fill": 'red'
 		    }
+		  },*/
+		  
+		  regionsSelectable: true,
+		  onRegionSelected: function(e, code){
+				add_country();
+			},
+		  onRegionTipShow: function(e, el, code){
+		    el.html(el.html());
 		  },
-		  series: {
+		};
+		
+		function add_country(code){
+			var selected = mapObj.getSelectedRegions();
+			var total_countries = Object.keys(jvmCountries).length;
+			var total_selected = selected.length;
+			var perc = Number((total_selected * 100) / total_countries).toFixed(0);
+			$(".percentage").html(perc + "%");
+		}
+
+		/*series: {
 		    regions: [{
 		      values: gdpData,
 		      attribute: 'fill',
 		    }]
-		  },
-		  onRegionTipShow: function(e, el, code){
-		    el.html(el.html());
-		  },
-		  onRegionClick: function(e, code){
-		  	
-		  }
-		};
-
-			
+		  },*/	
 		</script>
 	</head>
 	<body>
@@ -152,7 +164,7 @@
 				</div>
 				<div id="header-right">
 					<div class="percentage">
-						19%
+						0%
 					</div>
 					<div class="side">
 						world explored so far!
