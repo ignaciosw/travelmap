@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Title</title>
+		<meta charset="utf-8">
+		<meta name="description" content="Description.">
+		<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" href="css/style.css">
+		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="js/jquery-jvectormap-2.0.3.min.js"></script>
+		<script src="js/gdp-data.js"></script>
+		<script src="js/jquery-jvectormap-world-mill-en.js"></script>
+		<link rel="stylesheet" media="all" href="css/jquery-jvectormap-2.0.3.css" />
+		<script>
+		var mapObj;
+	    $(document).ready(function () {
+			$('#world-map').vectorMap(wrld);
+			mapObj = $('#world-map').vectorMap('get', 'mapObject');
+		});
+		
+	    var wrld = {
+		  map: 'world_mill_en',
+		  regionStyle: {
+		    hover: {
+		        "fill": 'red'
+		    }
+		  },
+		  series: {
+		    regions: [{
+		      values: gdpData,
+		      attribute: 'fill',
+		    }]
+		  },
+		  onRegionTipShow: function(e, el, code){
+		    el.html(el.html());
+		  },
+		  onRegionClick: function(e, code){
+		  	
+		  }
+		};
+
+			
+		</script>
+	</head>
+	<body>
+		<div id="fb-root"></div>
+
+			<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1702480320040341',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+  // This is called with the results from from FB.getLoginStatus().
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+      // Logged into your app and Facebook.
+      testAPI();
+    } else if (response.status === 'not_authorized') {
+      // The person is logged into Facebook, but not your app.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
+    } else {
+      // The person is not logged into Facebook, so we're not sure if
+      // they are logged into this app or not.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into Facebook.';
+    }
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '{your-app-id}',
+    cookie     : true,  // enable cookies to allow the server to access 
+                        // the session
+    xfbml      : true,  // parse social plugins on this page
+    version    : 'v2.5' // use graph api version 2.5
+  });
+
+  // Now that we've initialized the JavaScript SDK, we call 
+  // FB.getLoginStatus().  This function gets the state of the
+  // person visiting this page and can return one of three states to
+  // the callback you provide.  They can be:
+  //
+  // 1. Logged into your app ('connected')
+  // 2. Logged into Facebook, but not your app ('not_authorized')
+  // 3. Not logged into Facebook and can't tell if they are logged into
+  //    your app or not.
+  //
+  // These three cases are handled in the callback function.
+
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  // Here we run a very simple test of the Graph API after login is
+  // successful.  See statusChangeCallback() for when this call is made.
+  function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name);
+      document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '!';
+    });
+  }
+</script>
+		<div id="wrapper">
+			<div id="container">
+				<div id="header-left">
+					Start pinning countries!
+					<form class="search-box" action="">
+						<input type="search" class="search" placeholder="Country name" />
+						<button type="submit" class="submit" value="search">&nbsp;</button>
+					</form>
+				</div>
+				<div id="header-right">
+					<div class="percentage">
+						19%
+					</div>
+					<div class="side">
+						world explored so far!
+
+					</div>
+				</div>
+				<div class="map" id="world-map"></div>
+				<div
+  class="fb-like"
+  data-share="true"
+  data-width="450"
+  data-show-faces="true">
+</div>
+				<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="status">
+</div>
+				<div class="list">
+					<li><span class="color">2</span> Continents</li>
+					<li><span class="color">14</span> Countries</li>
+					<li><span class="color">19%</span> world seen</li>
+					<li><span class="color">81%</span> yet to be explored! :)</li>
+				</div>
+				<h1>Save your map updates, check your friends' ranking and more!</h1>
+				<a href="stats.html" style="text-decoration:none"><div class="facebook-box"><img src="facebook.png">Connect with Facebook to save map</div><a>
+			</div>
+			<div id="footer">Footer <a href="" class="footer">crap</a></div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Title</title>
+		<meta charset="utf-8">
+		<meta name="description" content="Description.">
+		<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" href="css/style.css">
+		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="js/jquery-jvectormap-2.0.3.min.js"></script>
+		<script src="js/gdp-data.js"></script>
+		<script src="js/jquery-jvectormap-world-mill-en.js"></script>
+		<link rel="stylesheet" media="all" href="css/jquery-jvectormap-2.0.3.css" />
+		<script>
+			
+		var mapObj;
+	    $(document).ready(function () {
+			$('#world-map').vectorMap(wrld);
+			mapObj = $('#world-map').vectorMap('get', 'mapObject');
+		});
+		
+	    var wrld = {
+		  map: 'world_mill_en',
+		  regionStyle: {
+		    hover: {
+		        "fill": 'red'
+		    }
+		  },
+		  series: {
+		    regions: [{
+		      values: gdpData,
+		      attribute: 'fill',
+		    }]
+		  },
+		  onRegionTipShow: function(e, el, code){
+		    el.html(el.html());
+		  },
+		  onRegionClick: function(e, code){
+		  	
+		  }
+		};
+		</script>
+	</head>
+	<body>
+		<div id="fb-root"></div>
+			<script>(function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) return;
+				js = d.createElement(s); js.id = id;
+				js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.5";
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));</script>
+		<div id="wrapper">
+			<div id="container">
+				<div id="header-left">
+					Start pinning countries!
+					<form class="search-box" action="">
+						<input type="search" class="search" placeholder="Country name" />
+						<button type="submit" class="submit" value="search">&nbsp;</button>
+					</form>
+				</div>
+				<div id="header-right">
+					<div class="percentage">
+						19%
+					</div>
+					<div class="side">
+						world explored so far!
+						<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+					</div>
+				</div>
+				<div class="map" id="world-map"></div>
+				<div class="login">
+					Iñaki Tritrisurriaga
+				</div>
+				<div class="list">
+					<li><span class="color">2</span> Continents</li>
+					<li><span class="color">14</span> Countries</li>
+					<li><span class="color">19%</span> world seen</li>
+					<li><span class="color">81%</span> yet to be explored! :)</li>
+				</div>
+				<h2>Friends ranking</h2>
+				<div class="user-box">
+					<div class="user-position">
+						1
+					</div>
+					<img src="user.png">Iñaki Tritrisurriaga
+					<div class="user-percentage">
+						24%
+					</div>
+				</div>
+				<div class="user-box-current">
+					<div class="user-position">
+						2
+					</div>
+					<img src="user.png">Iñaki Tritrisurriaga
+					<div class="user-percentage">
+						19%
+					</div>
+				</div>
+				<div class="user-box">
+					<div class="user-position">
+						3
+					</div>
+					<img src="user.png">Iñaki Tritrisurriaga
+					<div class="user-percentage">
+						15%
+					</div>
+				</div>
+				<div class="user-box">
+					<div class="user-position">
+						4
+					</div>
+					<img src="user.png">Iñaki Tritrisurriaga
+					<div class="user-percentage">
+						11%
+					</div>
+				</div>
+				<div class="user-box">
+					<div class="user-position">
+						5
+					</div>
+					<img src="user.png">Iñaki Tritrisurriaga
+					<div class="user-percentage">
+						9%
+					</div>
+				</div>
+				<div class="user-box">
+					<div class="user-position">
+						6
+					</div>
+					<img src="user.png">Iñaki Tritrisurriaga
+					<div class="user-percentage">
+						7%
+					</div>
+				</div>
+				<div class="user-box">
+					<div class="user-position">
+						7
+					</div>
+					<img src="user.png">Iñaki Tritrisurriaga
+					<div class="user-percentage">
+						5%
+					</div>
+				</div>
+				<h3>Share your map</h3>
+				<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+			</div>
+			<div id="footer">Footer <a href="" class="footer">crap</a></div>
+		</div>
+	</body>
+</html>
