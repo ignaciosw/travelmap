@@ -14,6 +14,7 @@ $(document).ready(function () {
 var wrld = {
   map: 'world_mill_en',
   regionsSelectable: true,
+  backgroundColor: '#1cb6ea',
   onRegionSelected: function(e, code){
 		add_country(code);
 	},
@@ -89,7 +90,7 @@ window.fbAsyncInit = function() {
 
   window.fbAsyncInit = function() {
   FB.init({
-    appId      : '{your-app-id}',
+    appId      : '1702480320040341',
     cookie     : true,  // enable cookies to allow the server to access 
                         // the session
     xfbml      : true,  // parse social plugins on this page
@@ -113,6 +114,7 @@ window.fbAsyncInit = function() {
   });
 
   };
+  
 
   // Load the SDK asynchronously
   (function(d, s, id) {

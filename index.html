@@ -1,9 +1,15 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>Title</title>
+		<title>Travel Pins!</title>
 		<meta charset="utf-8">
-		<meta name="description" content="Description.">
+		<meta name="description" content="Travel Pins!">
+		<meta property="og:url"                content="http://travelpins.world" />
+		<meta property="og:type"               content="article" />
+		<meta property="og:title"              content="This site is gonna kick ass!" />
+		<meta property="og:description"        content="when you gonna give me some time Sharona?" />
+		<meta property="og:image"              content="http://travelpins.world/images/mapa.png" />
+
 		<meta name="viewport" content="width=device-width">
 		<link rel="stylesheet" href="css/style.css">
 		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -40,18 +46,23 @@
 
 					</div>
 				</div>
-				<div class="map" id="world-map"></div>
-				<div
-  class="fb-like"
-  data-share="true"
-  data-width="450"
-  data-show-faces="true">
-</div>
-				<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
+				<div id="fb-root"></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.6&appId=1702480320040341";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<!--<div class="fb-share-button" data-href="http://travelpins.world" data-layout="button_count" data-mobile-iframe="true"></div>-->
+				
+				<!--<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+				</fb:login-button>-->
 
-<div id="status">
-</div>
+				<div id="status">
+				</div>
+				<div class="map" id="world-map"></div>
 				<div class="list">
 					<li><span class="color" id="continent_count">0</span> Continents</li>
 					<li><span class="color" id="country_count">0</span> Countries</li>
@@ -59,7 +70,7 @@
 					<li><span class="color" id="percentage_left_footer">100%</span> yet to be explored! :)</li>
 				</div>
 				<h1>Save your map updates, check your friends' ranking and more!</h1>
-				<a href="stats.html" style="text-decoration:none"><div class="facebook-box"><img src="facebook.png">Connect with Facebook to save map</div><a>
+				<div class="fb-share-button" data-href="http://travelpins.world" data-layout="link" data-mobile-iframe="true"></div><img src="facebook.png">Connect with Facebook to save map</div>
 			</div>
 			<div id="footer">Footer <a href="" class="footer">crap</a></div>
 		</div>
