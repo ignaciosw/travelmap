@@ -1,19 +1,28 @@
 var mapObj;
 var continents = [];
 
-$("#search").autocomplete({
-	 source: jvmCountries,
-	 dataType: "json",
- });
+
 
 $(document).ready(function () {
 	$('#world-map').vectorMap(wrld);
 	mapObj = $('#world-map').vectorMap('get', 'mapObject');
+	$("#search").autocomplete({
+	 source: jvmCountries,
+	 dataType: "json",
+ });
 });
 
 var wrld = {
   map: 'world_mill_en',
   regionsSelectable: true,
+  regionStyle: {
+  	selected: {
+        fill: '#EC684E'
+      },
+    hover : {
+    	fill: '#FFCDC3',
+    },
+  },
   backgroundColor: '#1cb6ea',
   onRegionSelected: function(e, code){
 		add_country(code);
