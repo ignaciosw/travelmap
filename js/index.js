@@ -1,15 +1,15 @@
 var mapObj;
 var continents = [];
 
-
-
 $(document).ready(function () {
 	$('#world-map').vectorMap(wrld);
 	mapObj = $('#world-map').vectorMap('get', 'mapObject');
+	
 	$("#search").autocomplete({
-	 source: jvmCountries,
-	 dataType: "json",
- });
+		autoFocus: true,
+		source:jvmCountries,
+        minLength:2
+ 	});
 });
 
 var wrld = {
@@ -76,6 +76,7 @@ window.fbAsyncInit = function() {
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
       testAPI();
+      
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log ' +
@@ -140,7 +141,9 @@ window.fbAsyncInit = function() {
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
-      document.getElementById('status').innerHTML =
-        'Thanks for logging in, ' + response.name + '!';
+    });
+    console.log("Fetching friends...");
+    FB.api('/me/friends', function (response) {
+        console.log(response);
     });
   }

@@ -60,7 +60,7 @@ body {
 
 #wrapper {
 	background:#1cb6ea;
-	height:640px;
+	height:580px;
 	margin:0 auto;
 	width:100%;
 }
@@ -145,7 +145,7 @@ body {
 .map {
 	background:#cccccc;
 	float:left;
-	height:465px;
+	height:400px;
 	margin-top:25px;
 	width:100%;
 }
