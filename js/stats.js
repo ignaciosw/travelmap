@@ -1,3 +1,4 @@
+//FACEBOOK
 var fb_id = "";
 var fb_name = "";
 
@@ -96,6 +97,11 @@ window.fbAsyncInit = function() {
     });
   }
   
+//END FACEBOOK
+  
+  
+//DATABASE WORK
+  
 var mapObj;
 var continents = [];
 
@@ -122,8 +128,13 @@ var wrld = {
     },
   },
   backgroundColor: '#1cb6ea',
-  onRegionClick: function(e, code){
-		add_country(fb_id, code);
+  onRegionSelected: function(e, code, isSelected, allSelections){
+		if(isSelected){
+			add_country(fb_id, code);
+		}else{
+			delete_country(fb_id, code);
+		}
+		
 	},
   onRegionTipShow: function(e, el, code){
     el.html(el.html());
@@ -153,8 +164,13 @@ function count(){
 
 function add_country(fb_id, code){
 	//save to db
-	save_country(fb_id, fb_name, code);
-	
+	save_country(fb_id, fb_name, code);	
+	count();
+}
+
+function remove_country(fb_id, code){
+	//save to db
+	delete_country(fb_id, code);	
 	count();
 }
 
@@ -163,6 +179,22 @@ function save_country(fb_id, fb_name, code){
 		url:'back/save.php',
 		type: 'POST',
 		data: {'facebook_id': fb_id, 'name' : fb_name, 'country_code': code},
+		success: function()
+			{
+				$.ajax({
+					url:'back/getcountries.php',
+					type: 'POST',
+					data:{'facebook_id':fb_id},
+				});
+			}
+	});
+}
+
+function delete_country(fb_id, code){
+	$.ajax({
+		url:'back/delete.php',
+		type: 'POST',
+		data: {'facebook_id': fb_id, 'country_code': code},
 		success: function()
 			{
 				$.ajax({
@@ -185,3 +217,5 @@ function get_countries(){
 		}
 	});
 }
+
+//END DATABASE

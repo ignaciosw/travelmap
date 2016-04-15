@@ -31,6 +31,18 @@ function get_countries($facebook_id){
 	return $return;
 }
 
+function delete_country($facebook_id, $country_code){
+	global $server, $db, $user, $pass;
 
+	$db_con = mysqli_connect($server, $user, $pass, $db);
+	
+	$SQL = "DELETE FROM travelpins_data WHERE facebook_id = '$facebook_id' AND country_code = '$country_code';";
+
+	$return = mysqli_query($db_con, $SQL);
+	
+	mysqli_close($db_con);
+
+	return $return;
+}
 
 ?>
