@@ -1,3 +1,6 @@
+var fb_id = "";
+var fb_name = "";
+
 window.fbAsyncInit = function() {
     FB.init({
       appId      : '1702480320040341',
@@ -16,13 +19,17 @@ window.fbAsyncInit = function() {
 
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
     // The response object is returned with a status field that lets the
     // app know the current login status of the person.
     // Full docs on the response object can be found in the documentation
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
+    	fb_id = response.authResponse.userID;
+    	FB.api('/me', function(response) {
+	      $(".login").html(response.name);
+	      fb_name = response.name;
+	    });
+    	get_countries();
       // Logged into your app and Facebook.
       testAPI();
       
@@ -84,13 +91,8 @@ window.fbAsyncInit = function() {
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
   function testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      $(".login").html(response.name);
-    });
-    console.log("Fetching friends...");
     FB.api('/me/friends', function (response) {
-        console.log(response);
+        //console.log(response);
     });
   }
   
@@ -120,27 +122,66 @@ var wrld = {
     },
   },
   backgroundColor: '#1cb6ea',
-  onRegionSelected: function(e, code){
-		add_country(code);
+  onRegionClick: function(e, code){
+		add_country(fb_id, code);
 	},
   onRegionTipShow: function(e, el, code){
     el.html(el.html());
   },
 };
 
-function add_country(code){
+function count(){
+	//change values in page
 	var selected = mapObj.getSelectedRegions();
 	var total_countries = Object.keys(jvmCountries).length;
 	var total_selected = selected.length;
 	var perc = Number((total_selected * 100) / total_countries).toFixed(0);
 	
-	if(continents.length == 0 || continents.indexOf(contis[code]) == -1){
-		continents.push(contis[code]);
+	for(i=0;i< selected.length; i++){
+		if(continents.length == 0 || continents.indexOf(contis[selected[i]]) == -1){
+			continents.push(contis[selected[i]]);
+		}	
 	}
+	
 	
 	$(".percentage").html(perc + "%");
 	$("#percentage_footer").html(perc +"%");
 	$("#percentage_left_footer").html((100 - perc) +"%");
 	$("#continent_count").html(continents.length);
-	$("#country_count").html(mapObj.getSelectedRegions().length);
+	$("#country_count").html(mapObj.getSelectedRegions().length);	
+}
+
+function add_country(fb_id, code){
+	//save to db
+	save_country(fb_id, fb_name, code);
+	
+	count();
+}
+
+function save_country(fb_id, fb_name, code){
+	$.ajax({
+		url:'back/save.php',
+		type: 'POST',
+		data: {'facebook_id': fb_id, 'name' : fb_name, 'country_code': code},
+		success: function()
+			{
+				$.ajax({
+					url:'back/getcountries.php',
+					type: 'POST',
+					data:{'facebook_id':fb_id},
+				});
+			}
+	});
+}
+
+function get_countries(){
+	$.ajax({
+		url:'back/getcountries.php',
+		type: 'POST',
+		data:{'facebook_id':fb_id},
+		success: function(data){
+			mapObj.setSelectedRegions($.map(data, function(codes) { return codes.country_code; }));
+			count();
+		}
+	});
 }
