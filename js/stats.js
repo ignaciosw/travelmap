@@ -28,13 +28,11 @@ window.fbAsyncInit = function() {
       
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
+      window.location = "https://travelpins.world";
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into Facebook.';
+      window.location = "https://travelpins.world";
     }
   }
 
@@ -86,16 +84,14 @@ window.fbAsyncInit = function() {
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
   function testAPI() {
-  	window.location="/stats.html";
-  	/*
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
+      $(".login").html(response.name);
     });
     console.log("Fetching friends...");
     FB.api('/me/friends', function (response) {
         console.log(response);
-    });*/
+    });
   }
   
 var mapObj;
