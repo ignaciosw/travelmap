@@ -1,6 +1,8 @@
 //FACEBOOK
 var fb_id = "";
 var fb_name = "";
+var friends = {};
+var friends_list = [];
 
 window.fbAsyncInit = function() {
     FB.init({
@@ -31,8 +33,8 @@ window.fbAsyncInit = function() {
 	      fb_name = response.name;
 	    });
     	get_countries();
+    	check_friends();
       // Logged into your app and Facebook.
-      testAPI();
       
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
@@ -62,18 +64,6 @@ window.fbAsyncInit = function() {
     version    : 'v2.5' // use graph api version 2.5
   });
 
-  // Now that we've initialized the JavaScript SDK, we call 
-  // FB.getLoginStatus().  This function gets the state of the
-  // person visiting this page and can return one of three states to
-  // the callback you provide.  They can be:
-  //
-  // 1. Logged into your app ('connected')
-  // 2. Logged into Facebook, but not your app ('not_authorized')
-  // 3. Not logged into Facebook and can't tell if they are logged into
-  //    your app or not.
-  //
-  // These three cases are handled in the callback function.
-
   FB.getLoginStatus(function(response) {
     statusChangeCallback(response);
   });
@@ -88,12 +78,47 @@ window.fbAsyncInit = function() {
     js.src = "//connect.facebook.net/en_US/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-
-  // Here we run a very simple test of the Graph API after login is
-  // successful.  See statusChangeCallback() for when this call is made.
-  function testAPI() {
-    FB.api('/me/friends', function (response) {
-        //console.log(response);
+  
+  function check_friends(){
+  	FB.api('/me/friends', function (response) {
+        if(response.data.length == 0){
+        	$("#friends_ranking").html("None of your friends have used this app yet! Share it!");
+        }else{
+        	friends = response.data;
+        	for(var i=0; i < friends.length ; i++){
+        		friends_list.push({
+        			id: friends[i].id,
+        			name: friends[i].name,
+        			picture: '//graph.facebook.com/'+friends[i].id+'/picture?type=small',
+        			percentage: get_friend_percentage(friends[i].id),
+        		});
+        	}
+        	friends_list.push({
+        		id: fb_id,
+        		name: fb_name,
+        		picture: '//graph.facebook.com/'+fb_id+'/picture?type=small',
+        		percentage: get_my_percentage()
+        	});
+        	
+        	friends_list = friends_list.sort(dynamicSort("percentage"));
+        	
+        	$(document).ready(function(){
+        		var all_users = "";
+	        	$.each(friends_list, function(i, item){
+	        		var user_div = document.createElement("div");
+	        		var position_div = document.createElement("div");
+	        		var img_element = document.createElement("img");
+	        		var user_type = "user-box";
+	        		if(item.id == fb_id){
+	        			user_type = 'user-box-current';
+	        		}
+	        		user_div = "<div class='"+ user_type +"'><div class='user-position'>" + parseInt(i+1) + "</div><img src='"+ item.picture +"'>" + item.name + "<div class='user-percentage'>" + item.percentage + "%</div></div>";
+	        		all_users += user_div;
+	        	});
+	        	$("#friends_ranking").append(all_users);
+        	});
+        	
+        }
     });
   }
   
@@ -109,11 +134,11 @@ $(document).ready(function () {
 	$('#world-map').vectorMap(wrld);
 	mapObj = $('#world-map').vectorMap('get', 'mapObject');
 	
-	$("#search").autocomplete({
+	/*$("#search").autocomplete({
 		autoFocus: true,
 		source:jvmCountries,
         minLength:2
- 	});
+ 	});*/
 });
 
 var wrld = {
@@ -128,8 +153,8 @@ var wrld = {
     },
   },
   backgroundColor: '#1cb6ea',
-  onRegionSelected: function(e, code, isSelected, allSelections){
-		if(isSelected){
+  onRegionClick: function(e, code){
+		if(!mapObj.regions[code].element.isSelected){
 			add_country(fb_id, code);
 		}else{
 			delete_country(fb_id, code);
@@ -140,9 +165,42 @@ var wrld = {
     el.html(el.html());
   },
 };
+/*
+function get_friend_percentage(friend_fb_id){
+	query_friend_percentage(friend_fb_id, function(perc){
+		console.log(perc);
+		return perc;
+	});
+}*/
+
+function get_friend_percentage(friend_fb_id){
+	var perc;
+	$.ajax({
+		url:'back/getcountries.php',
+		async: false,
+		type: 'POST',
+		data:{'facebook_id':friend_fb_id},
+		success: function(data){
+			var selected = $.map(data, function(codes) { return codes.country_code; });
+			var total_countries = Object.keys(jvmCountries).length;
+			var total_selected = selected.length;
+			perc = Number((total_selected * 100) / total_countries).toFixed(0);
+		}
+	});
+	return perc;
+}
+
+function get_my_percentage(){
+	var selected = mapObj.getSelectedRegions();
+	var total_countries = Object.keys(jvmCountries).length;
+	var total_selected = selected.length;
+	var perc = Number((total_selected * 100) / total_countries).toFixed(0);
+	return perc;
+}
 
 function count(){
 	//change values in page
+	continents = [];
 	var selected = mapObj.getSelectedRegions();
 	var total_countries = Object.keys(jvmCountries).length;
 	var total_selected = selected.length;
@@ -165,13 +223,11 @@ function count(){
 function add_country(fb_id, code){
 	//save to db
 	save_country(fb_id, fb_name, code);	
-	count();
 }
 
 function remove_country(fb_id, code){
 	//save to db
 	delete_country(fb_id, code);	
-	count();
 }
 
 function save_country(fb_id, fb_name, code){
@@ -179,14 +235,7 @@ function save_country(fb_id, fb_name, code){
 		url:'back/save.php',
 		type: 'POST',
 		data: {'facebook_id': fb_id, 'name' : fb_name, 'country_code': code},
-		success: function()
-			{
-				$.ajax({
-					url:'back/getcountries.php',
-					type: 'POST',
-					data:{'facebook_id':fb_id},
-				});
-			}
+		success: count()
 	});
 }
 
@@ -195,14 +244,7 @@ function delete_country(fb_id, code){
 		url:'back/delete.php',
 		type: 'POST',
 		data: {'facebook_id': fb_id, 'country_code': code},
-		success: function()
-			{
-				$.ajax({
-					url:'back/getcountries.php',
-					type: 'POST',
-					data:{'facebook_id':fb_id},
-				});
-			}
+		success: count()
 	});
 }
 
@@ -219,3 +261,16 @@ function get_countries(){
 }
 
 //END DATABASE
+
+//FUNCTIONS
+function dynamicSort(property) {
+    var sortOrder = -1;
+    if(property[0] === "-") {
+        sortOrder = 1;
+        property = property.substr(1);
+    }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    };
+}

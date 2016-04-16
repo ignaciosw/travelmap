@@ -125,6 +125,7 @@ var wrld = {
   },
   backgroundColor: '#1cb6ea',
   onRegionClick: function(e, code){
+  	console.log(e);
 		add_country(code);
 	},
   onRegionTipShow: function(e, el, code){
