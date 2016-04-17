@@ -1,3 +1,52 @@
+//CREATE MAP
+
+var mapObj;
+var continents = [];
+
+$(document).ready(function () {
+	$('#world-map').vectorMap(wrld);
+	mapObj = $('#world-map').vectorMap('get', 'mapObject');
+	
+	var countries_arr = Object.keys(jvmCountries).map(function(k) { return jvmCountries[k]; });
+	//console.log(countries_arr);
+	
+	$("#search").autocomplete({
+		source: jvmCountries,
+        minLength:2
+        
+ 	});
+});
+
+
+var wrld = {
+  map: 'world_mill_en',
+  regionStyle: {
+  	selected: {
+        fill: '#EC684E'
+      },
+    hover : {
+    	fill: '#FFCDC3',
+    },
+  },
+  backgroundColor: '#1cb6ea',
+  onRegionClick: function(e, code){
+		if(!mapObj.regions[code].element.isSelected || mapObj.regions[code].element.isSelected == undefined){
+			mapObj.setSelectedRegions(code);
+			add_country(fb_id, code);
+			
+		}else if(mapObj.regions[code].element.isSelected){
+			mapObj.regions[code].element.setSelected(false);
+			remove_country(fb_id, code);
+		}
+	},
+  onRegionTipShow: function(e, el, code){
+    el.html(el.html());
+  },
+};
+
+
+
+
 //FACEBOOK
 var fb_id = "";
 var fb_name = "";
@@ -29,7 +78,7 @@ window.fbAsyncInit = function() {
     if (response.status === 'connected') {
     	fb_id = response.authResponse.userID;
     	FB.api('/me', function(response) {
-	      $(".login").html(response.name);
+	      $(".login").html(response.name + ' - <a href="javascript:logout()">log out</a>');
 	      fb_name = response.name;
 	    });
     	get_countries();
@@ -70,20 +119,11 @@ window.fbAsyncInit = function() {
 
   };
   
-  // Load the SDK asynchronously
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-  
   function check_friends(){
   	FB.api('/me/friends', function (response) {
         if(response.data.length == 0){
         	$("#friends_ranking").html("None of your friends have used this app yet! Share it!");
-        }else{
+        }else{        	
         	friends = response.data;
         	for(var i=0; i < friends.length ; i++){
         		friends_list.push({
@@ -99,6 +139,7 @@ window.fbAsyncInit = function() {
         		picture: '//graph.facebook.com/'+fb_id+'/picture?type=small',
         		percentage: get_my_percentage()
         	});
+
         	
         	friends_list = friends_list.sort(dynamicSort("percentage"));
         	
@@ -122,56 +163,17 @@ window.fbAsyncInit = function() {
     });
   }
   
+  function logout(){
+  	FB.logout(function(response) {  
+  		statusChangeCallback(response);		
+	});
+	
+  }
+  
 //END FACEBOOK
   
   
 //DATABASE WORK
-  
-var mapObj;
-var continents = [];
-
-$(document).ready(function () {
-	$('#world-map').vectorMap(wrld);
-	mapObj = $('#world-map').vectorMap('get', 'mapObject');
-	
-	/*$("#search").autocomplete({
-		autoFocus: true,
-		source:jvmCountries,
-        minLength:2
- 	});*/
-});
-
-var wrld = {
-  map: 'world_mill_en',
-  regionsSelectable: true,
-  regionStyle: {
-  	selected: {
-        fill: '#EC684E'
-      },
-    hover : {
-    	fill: '#FFCDC3',
-    },
-  },
-  backgroundColor: '#1cb6ea',
-  onRegionClick: function(e, code){
-		if(!mapObj.regions[code].element.isSelected){
-			add_country(fb_id, code);
-		}else{
-			delete_country(fb_id, code);
-		}
-		
-	},
-  onRegionTipShow: function(e, el, code){
-    el.html(el.html());
-  },
-};
-/*
-function get_friend_percentage(friend_fb_id){
-	query_friend_percentage(friend_fb_id, function(perc){
-		console.log(perc);
-		return perc;
-	});
-}*/
 
 function get_friend_percentage(friend_fb_id){
 	var perc;
@@ -222,29 +224,31 @@ function count(){
 
 function add_country(fb_id, code){
 	//save to db
-	save_country(fb_id, fb_name, code);	
+	save_country(fb_id, fb_name, code);
+	count();
 }
 
 function remove_country(fb_id, code){
 	//save to db
-	delete_country(fb_id, code);	
+	delete_country(fb_id, code);
+	count();
 }
 
 function save_country(fb_id, fb_name, code){
 	$.ajax({
+		async: true,
 		url:'back/save.php',
 		type: 'POST',
 		data: {'facebook_id': fb_id, 'name' : fb_name, 'country_code': code},
-		success: count()
 	});
 }
 
 function delete_country(fb_id, code){
 	$.ajax({
+		async: true,
 		url:'back/delete.php',
 		type: 'POST',
 		data: {'facebook_id': fb_id, 'country_code': code},
-		success: count()
 	});
 }
 
