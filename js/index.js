@@ -3,6 +3,7 @@
 var mapObj;
 var continents = [];
 
+function loadMap(){
 $(document).ready(function () {
 	$('#world-map').vectorMap(wrld);
 	mapObj = $('#world-map').vectorMap('get', 'mapObject');
@@ -16,7 +17,7 @@ $(document).ready(function () {
         
  	});
 });
-
+}
 
 var wrld = {
   map: 'world_mill_en',
@@ -27,7 +28,11 @@ var wrld = {
       },
     hover : {
     	fill: '#FFCDC3',
+    	"fill-opacity": 0,
     },
+    selectedHover: {
+    	fill: '#FFCDC3',
+  	}
   },
   backgroundColor: '#1cb6ea',
   onRegionSelected: function(e, code){
@@ -39,7 +44,7 @@ var wrld = {
 };
 
 
-window.fbAsyncInit = function() {
+/*window.fbAsyncInit = function() {
     FB.init({
       appId      : '1702480320040341',
       xfbml      : true,
@@ -53,7 +58,7 @@ window.fbAsyncInit = function() {
      js = d.createElement(s); js.id = id;
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
+   }(document, 'script', 'facebook-jssdk'));*/
 
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
@@ -77,6 +82,7 @@ window.fbAsyncInit = function() {
       document.getElementById('status').innerHTML = 'Please log ' +
         'into Facebook.';
     }
+    loadMap();
   }
 
   // This function is called when someone finishes with the Login
@@ -84,11 +90,13 @@ window.fbAsyncInit = function() {
   // code below.
   function checkLoginState() {
     FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
+      if(response.status === 'connected'){
+      	window.location = "/mymap.html?logged=1";
+      }
     });
   }
 
-  window.fbAsyncInit = function() {
+  /*window.fbAsyncInit = function() {
   FB.init({
     appId      : '1702480320040341',
     cookie     : true,  // enable cookies to allow the server to access 
@@ -101,7 +109,7 @@ window.fbAsyncInit = function() {
     statusChangeCallback(response);
   });
 
-  };
+  };*/
   
 
 
@@ -157,3 +165,6 @@ function log_session(){
 	});
 	count();
 }
+
+
+//FUNCTIONS

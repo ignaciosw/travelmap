@@ -11,9 +11,16 @@ $(document).ready(function () {
 	//console.log(countries_arr);
 	
 	$("#search").autocomplete({
-		source: jvmCountries,
-        minLength:2
-        
+		/*source: function(request,response){
+			$.map(jvmCountries, function(item){
+				console.log(item);
+				return {
+					label: item,
+					value: item.name
+				};
+			});
+		},*/
+		source: countries_arr
  	});
 });
 
@@ -26,7 +33,11 @@ var wrld = {
       },
     hover : {
     	fill: '#FFCDC3',
+    	"fill-opacity": 1,
     },
+    selectedHover: {
+    	fill: '#FFCDC3',
+  	}
   },
   backgroundColor: '#1cb6ea',
   onRegionClick: function(e, code){
@@ -43,7 +54,6 @@ var wrld = {
     el.html(el.html());
   },
 };
-
 
 
 
@@ -81,7 +91,12 @@ window.fbAsyncInit = function() {
 	      $(".login").html(response.name + ' - <a href="javascript:logout()">log out</a>');
 	      fb_name = response.name;
 	    });
-    	get_countries();
+	    if(getParameterByName('logged')){
+	    	get_session();
+	    }else{
+	    	get_countries();
+	    }
+    	
     	check_friends();
       // Logged into your app and Facebook.
       
@@ -167,7 +182,6 @@ window.fbAsyncInit = function() {
   	FB.logout(function(response) {  
   		statusChangeCallback(response);		
 	});
-	
   }
   
 //END FACEBOOK
@@ -213,7 +227,6 @@ function count(){
 			continents.push(contis[selected[i]]);
 		}	
 	}
-	
 	
 	$(".percentage").html(perc + "%");
 	$("#percentage_footer").html(perc +"%");
@@ -277,4 +290,27 @@ function dynamicSort(property) {
         var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
         return result * sortOrder;
     };
+}
+
+
+function getParameterByName(name) {
+	var url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function get_session(){
+	$.ajax({
+		url:'back/getsession.php',
+		type: 'POST',
+		data:{'facebook_id':fb_id, 'name' : fb_name},
+		success: function(data){
+			mapObj.setSelectedRegions($.map(data, function(codes) { return codes.country_code; }));
+			count();
+		}
+	});
 }
