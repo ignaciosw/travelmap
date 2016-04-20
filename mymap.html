@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width">
 		<link rel="stylesheet" href="css/style.css">
 		<script src="//code.jquery.com/jquery-1.12.3.min.js"></script>
-		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
 		<script src="js/jquery-jvectormap-2.0.4.min.js"></script>
 		<script src="js/gdp-data.js"></script>
 		<script src="js/countries.js"></script>
@@ -23,8 +23,9 @@
 		<script src="js/mymap.js"></script>
 		<script src="js/modernizr.js"></script>
 		<script src="js/css3-mediaqueries.js"></script>
+		<link rel="stylesheet" media="all" href="css/jquery-ui.min.css" />
 		<link rel="stylesheet" media="all" href="css/jquery-jvectormap-2.0.4.css" />
-		<link rel="stylesheet" media="all" href="css/jquery-ui-1.8.22.custom.css" />
+		
 	</head>
 	<body>
 		<div id="fb-root"></div>
@@ -33,7 +34,7 @@
 				<div id="header-left">
 					Start pinning countries!
 					<form class="search-box" action="">
-						<input type="search" class="search" placeholder="Country name" />
+						<input type="search" class="search" id="search" placeholder="Country name" />
 						<button type="submit" class="submit" value="search">&nbsp;</button>
 					</form>
 				</div>
@@ -51,13 +52,11 @@
 				<div class="login">
 					
 				</div>
-				<div class="list">
 					<div class="list">
 					<li><span class="color" id="continent_count">0</span> Continents</li>
 					<li><span class="color" id="country_count">0</span> Countries</li>
 					<li><span class="color" id="percentage_footer">0%</span>world seen</li>
 					<li><span class="color" id="percentage_left_footer">100%</span> yet to be explored! :)</li>
-				</div>
 				</div>
 				<h2>Friends ranking</h2>
 				<div id="friends_ranking">

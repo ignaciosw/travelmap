@@ -4,24 +4,47 @@ var mapObj;
 var continents = [];
 
 $(document).ready(function () {
+	$("#search").focus();
 	$('#world-map').vectorMap(wrld);
 	mapObj = $('#world-map').vectorMap('get', 'mapObject');
 	
-	var countries_arr = Object.keys(jvmCountries).map(function(k) { return jvmCountries[k]; });
-	//console.log(countries_arr);
-	
 	$("#search").autocomplete({
-		/*source: function(request,response){
-			$.map(jvmCountries, function(item){
-				console.log(item);
-				return {
-					label: item,
-					value: item.name
-				};
-			});
-		},*/
-		source: countries_arr
- 	});
+		source: function (request, response) {
+            var re = $.ui.autocomplete.escapeRegex(request.term);
+            var matcher = new RegExp("^" + re, "i");
+            response($.grep(($.map(jvmCountries, function (v, i) {
+                return {
+                    label: v.name,
+                    value: i
+                };
+            })), function (item) {
+                return matcher.test(item.label);
+            }));
+
+        },
+        select: function(event, ui) {
+	        mapObj.setSelectedRegions(ui.item.value);
+	        $(this).val(''); return false;
+        },
+        focus: function (event, ui) {
+			this.value = ui.item.label;
+			event.preventDefault(); // Prevent the default focus behavior.
+		},
+        minLength:1,
+        open: function(){
+                $('.ui-autocomplete').css('width', '300px');
+                $('.ui-autocomplete').css('backgroundColor', '#FFF');
+                $('.ui-autocomplete').css('color', '#000');
+                $('.ui-menu').css('float', 'left');
+                $('.ui-menu').css('clear', 'left');
+           },
+            
+ 	}).data( "uiAutocomplete" )._renderItem = function( ul, item ) {
+        return $( "<li></li>" )
+            .data( "item.autocomplete", item )
+            .append( item.label )
+            .appendTo( ul );
+    };
 });
 
 

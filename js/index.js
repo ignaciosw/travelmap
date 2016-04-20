@@ -3,21 +3,50 @@
 var mapObj;
 var continents = [];
 
-function loadMap(){
 $(document).ready(function () {
+	$("#search").focus();
 	$('#world-map').vectorMap(wrld);
 	mapObj = $('#world-map').vectorMap('get', 'mapObject');
 	
-	var countries_arr = Object.keys(jvmCountries).map(function(k) { return jvmCountries[k]; });
-	//console.log(countries_arr);
-	
 	$("#search").autocomplete({
-		source: jvmCountries,
-        minLength:2
-        
- 	});
+		source: function (request, response) {
+            var re = $.ui.autocomplete.escapeRegex(request.term);
+            var matcher = new RegExp("^" + re, "i");
+            response($.grep(($.map(jvmCountries, function (v, i) {
+                return {
+                    label: v.name,
+                    value: i
+                };
+            })), function (item) {
+                return matcher.test(item.label);
+            }));
+
+        },
+        select: function(event, ui) {
+	        mapObj.setSelectedRegions(ui.item.value);
+	        $(this).val(''); return false;
+        },
+        focus: function (event, ui) {
+			this.value = ui.item.label;
+			event.preventDefault(); // Prevent the default focus behavior.
+		},
+        minLength:1,
+        open: function(){
+                $('.ui-autocomplete').css('width', '300px');
+                $('.ui-autocomplete').css('backgroundColor', '#FFF');
+                $('.ui-autocomplete').css('color', '#000');
+                $('.ui-menu').css('float', 'left');
+                $('.ui-menu').css('clear', 'left');
+           },
+            
+ 	}).data( "uiAutocomplete" )._renderItem = function( ul, item ) {
+        return $( "<li></li>" )
+            .data( "item.autocomplete", item )
+            .append( item.label )
+            .appendTo( ul );
+    };
 });
-}
+
 
 var wrld = {
   map: 'world_mill_en',
@@ -28,7 +57,7 @@ var wrld = {
       },
     hover : {
     	fill: '#FFCDC3',
-    	"fill-opacity": 0,
+    	"fill-opacity": 1,
     },
     selectedHover: {
     	fill: '#FFCDC3',
@@ -43,8 +72,10 @@ var wrld = {
   },
 };
 
+//FACEBOOK
 
-/*window.fbAsyncInit = function() {
+
+window.fbAsyncInit = function() {
     FB.init({
       appId      : '1702480320040341',
       xfbml      : true,
@@ -58,12 +89,10 @@ var wrld = {
      js = d.createElement(s); js.id = id;
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));*/
+   }(document, 'script', 'facebook-jssdk'));
 
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
     // The response object is returned with a status field that lets the
     // app know the current login status of the person.
     // Full docs on the response object can be found in the documentation
@@ -74,15 +103,14 @@ var wrld = {
       
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
+      $(".login").html('Please log ' +
+        'into this app.');
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into Facebook.';
+      $(".login").html('Please log ' +
+        'into Facebook.');
     }
-    loadMap();
   }
 
   // This function is called when someone finishes with the Login
@@ -96,7 +124,7 @@ var wrld = {
     });
   }
 
-  /*window.fbAsyncInit = function() {
+  window.fbAsyncInit = function() {
   FB.init({
     appId      : '1702480320040341',
     cookie     : true,  // enable cookies to allow the server to access 
@@ -109,7 +137,7 @@ var wrld = {
     statusChangeCallback(response);
   });
 
-  };*/
+  };
   
 
 
