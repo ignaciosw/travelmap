@@ -24,6 +24,7 @@ $(document).ready(function () {
         },
         select: function(event, ui) {
 	        mapObj.setSelectedRegions(ui.item.value);
+	        count();
 	        $(this).val(''); return false;
         },
         focus: function (event, ui) {
