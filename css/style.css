@@ -403,7 +403,7 @@ p {
 }
 
 /* autocomplete */
-.ui-autocomplete { position: absolute; cursor: default; background:#CCC }   
+.ui-autocomplete { position: absolute; cursor: default; background:#FFF }   
 
 /* workarounds */
 html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */
@@ -437,3 +437,5 @@ html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% i
     font-weight: normal;
     margin: -1px;
 }
+ul.ui-autocomplete li.ui-menu-item{text-align:left;}
+ul.ui-autocomplete li.ui-menu-item{padding:5px;}

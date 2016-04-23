@@ -2,6 +2,7 @@
 
 var mapObj;
 var continents = [];
+var image_data;
 
 $(document).ready(function () {
 	$("#search").focus();
@@ -25,6 +26,7 @@ $(document).ready(function () {
         select: function(event, ui) {
 	        mapObj.setSelectedRegions(ui.item.value);
 	        count();
+	        check_friends();
 	        $(this).val(''); return false;
         },
         focus: function (event, ui) {
@@ -32,20 +34,29 @@ $(document).ready(function () {
 			event.preventDefault(); // Prevent the default focus behavior.
 		},
         minLength:1,
-        open: function(){
-                $('.ui-autocomplete').css('width', '300px');
-                $('.ui-autocomplete').css('backgroundColor', '#FFF');
-                $('.ui-autocomplete').css('color', '#000');
-                $('.ui-menu').css('float', 'left');
-                $('.ui-menu').css('clear', 'left');
-           },
-            
+        
  	}).data( "uiAutocomplete" )._renderItem = function( ul, item ) {
         return $( "<li></li>" )
             .data( "item.autocomplete", item )
             .append( item.label )
             .appendTo( ul );
     };
+
+    $("#fb-share-map").click(function(){
+
+      var oSerializer = new XMLSerializer();
+      var sXML = oSerializer.serializeToString(document.querySelector("#world-map svg"));
+
+      canvg(document.getElementById('canvas'), sXML,{ ignoreMouse: true, ignoreAnimation: true });
+      var imgData = canvas.toDataURL("image/png");
+      
+      //send base64 data to server and create the png image
+      save_map_image(imgData);
+      
+      //share the image
+      
+      
+    });
 });
 
 
@@ -73,6 +84,7 @@ var wrld = {
 			mapObj.regions[code].element.setSelected(false);
 			remove_country(fb_id, code);
 		}
+		check_friends();
 	},
   onRegionTipShow: function(e, el, code){
     el.html(el.html());
@@ -159,6 +171,11 @@ window.fbAsyncInit = function() {
   };
   
   function check_friends(){
+  	
+  	$("#friends_ranking").block({message:"Loading Friends List..."});
+  	$("#friends_ranking").empty();
+  	$("#friends_ranking").html("Loading Friends Ranking...");
+  	friends_list = [];
   	FB.api('/me/friends', function (response) {
         if(response.data.length == 0){
         	$("#friends_ranking").html("None of your friends have used this app yet! Share it!");
@@ -178,21 +195,21 @@ window.fbAsyncInit = function() {
         		picture: '//graph.facebook.com/'+fb_id+'/picture?type=small',
         		percentage: get_my_percentage()
         	});
-
-        	
-        	friends_list = friends_list.sort(dynamicSort("percentage"));
-        	
+			
+			//sort friends
+        	friends_list = friends_list.sort(function(a, b) { return b.percentage - a.percentage; } );
+        	$("#friends_ranking").empty();
         	$(document).ready(function(){
         		var all_users = "";
 	        	$.each(friends_list, function(i, item){
-	        		var user_div = document.createElement("div");
-	        		var position_div = document.createElement("div");
-	        		var img_element = document.createElement("img");
 	        		var user_type = "user-box";
 	        		if(item.id == fb_id){
 	        			user_type = 'user-box-current';
 	        		}
-	        		user_div = "<div class='"+ user_type +"'><div class='user-position'>" + parseInt(i+1) + "</div><img src='"+ item.picture +"'>" + item.name + "<div class='user-percentage'>" + item.percentage + "%</div></div>";
+	        		user_div = "<div class='"+ user_type +"'>";
+	        		user_div +="<div class='user-position'>" + parseInt(i+1) + "</div>";
+	        		user_div +="<img width='50' height='50' src='"+ item.picture +"'>" + item.name;
+	        		user_div += "<div class='user-percentage'>" + item.percentage + "%</div></div>";
 	        		all_users += user_div;
 	        	});
 	        	$("#friends_ranking").append(all_users);
@@ -200,6 +217,7 @@ window.fbAsyncInit = function() {
         	
         }
     });
+    $("#friends_ranking").unblock();
   }
   
   function logout(){
@@ -273,11 +291,35 @@ function remove_country(fb_id, code){
 
 function save_country(fb_id, fb_name, code){
 	$.ajax({
-		async: true,
 		url:'back/save.php',
 		type: 'POST',
 		data: {'facebook_id': fb_id, 'name' : fb_name, 'country_code': code},
 	});
+}
+
+function save_map_image(data){
+	$.blockUI({message: "Generating Map..."});
+	$.ajax({
+		async: false,
+		url:'back/save_image.php',
+		type: 'POST',
+		data: {'facebook_id': fb_id, 'data' : data},
+		success: function(response){
+			share_map_fb(response);
+		}
+	});
+	$.unblockUI();
+}
+
+function share_map_fb(data){
+	console.log(data);
+	FB.ui({
+		        method: 'share',
+		        href: 'https://travelpins.world/',
+		        picture: 'https://travelpins.world' + data.image_url,
+		        //caption: fb_name + " has seen " + $("#percentage_footer").html() + " of the world.",
+		        description: fb_name + " has seen " + $("#percentage_footer").html() + " of the world. How much have you?",
+		      });
 }
 
 function delete_country(fb_id, code){
@@ -304,16 +346,10 @@ function get_countries(){
 //END DATABASE
 
 //FUNCTIONS
-function dynamicSort(property) {
-    var sortOrder = -1;
-    if(property[0] === "-") {
-        sortOrder = 1;
-        property = property.substr(1);
-    }
-    return function (a,b) {
-        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-        return result * sortOrder;
-    };
+function dynamicSort(objArray, prop, direction) {
+    friends_list = friends_list.sort(function(a, b) {
+        return (a['percentage'] > b['percentage']) ? 1 : ((a['percentage'] < b['percentage']) ? -1 : 0);
+    });
 }
 
 

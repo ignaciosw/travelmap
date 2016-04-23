@@ -32,14 +32,7 @@ $(document).ready(function () {
 			event.preventDefault(); // Prevent the default focus behavior.
 		},
         minLength:1,
-        open: function(){
-                $('.ui-autocomplete').css('width', '300px');
-                $('.ui-autocomplete').css('backgroundColor', '#FFF');
-                $('.ui-autocomplete').css('color', '#000');
-                $('.ui-menu').css('float', 'left');
-                $('.ui-menu').css('clear', 'left');
-           },
-            
+        
  	}).data( "uiAutocomplete" )._renderItem = function( ul, item ) {
         return $( "<li></li>" )
             .data( "item.autocomplete", item )
@@ -102,7 +95,8 @@ window.fbAsyncInit = function() {
       // Logged into your app and Facebook.
       window.location="/mymap.html";
       
-    } else if (response.status === 'not_authorized') {
+    } 
+    /*else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       $(".login").html('Please log ' +
         'into this app.');
@@ -111,7 +105,7 @@ window.fbAsyncInit = function() {
       // they are logged into this app or not.
       $(".login").html('Please log ' +
         'into Facebook.');
-    }
+    }*/
   }
 
   // This function is called when someone finishes with the Login
