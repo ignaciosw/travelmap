@@ -19,7 +19,9 @@ svg {
     color: white;
     font-family: sans-serif, Verdana;
     font-size: smaller;
-    padding: 6px;
+    padding: 4px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .jvectormap-zoomin, .jvectormap-zoomout, .jvectormap-goback {

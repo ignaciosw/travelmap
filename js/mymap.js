@@ -7,6 +7,7 @@ var image_data;
 $(document).ready(function () {
 	$("#search").focus();
 	$('#world-map').vectorMap(wrld);
+  $("svg").css("backgroundColor", "#1cb6ea");
 	mapObj = $('#world-map').vectorMap('get', 'mapObject');
 	
 	$("#search").autocomplete({
@@ -24,7 +25,15 @@ $(document).ready(function () {
 
         },
         select: function(event, ui) {
-	        mapObj.setSelectedRegions(ui.item.value);
+	        //mapObj.setSelectedRegions(ui.item.value);
+          if(!mapObj.regions[ui.item.value].element.isSelected || mapObj.regions[ui.item.value].element.isSelected == undefined){
+            mapObj.setSelectedRegions(ui.item.value);
+            add_country(fb_id, ui.item.value);
+            
+          }else if(mapObj.regions[ui.item.value].element.isSelected){
+            mapObj.regions[ui.item.value].element.setSelected(false);
+            remove_country(fb_id, ui.item.value);
+          }
 	        count();
 	        check_friends();
 	        $(this).val(''); return false;
