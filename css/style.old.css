@@ -130,17 +130,6 @@ body {
 	text-align:center;
 }
 
-#fb-share-map {
-	background-image:url(../images/facebook-search.png);
-	background-repeat:no-repeat;
-	background-position:center;
-	border:none;
-	cursor:pointer;
-    display:inline-block;
-	height:20px;
-	width:58px;
-}
-
 .search-box {
 	height:50px;
 	width:100%;

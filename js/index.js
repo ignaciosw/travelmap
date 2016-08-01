@@ -46,6 +46,9 @@ var wrld = {
   map: 'world_mill_en',
   regionsSelectable: true,
   regionStyle: {
+    initial: {
+        fill: "#eeeeee"
+      },
   	selected: {
         fill: '#EC684E'
       },

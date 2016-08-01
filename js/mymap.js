@@ -5,6 +5,7 @@ var continents = [];
 var image_data;
 
 $(document).ready(function () {
+  document.querySelector("canvas").style.fill = "#1cb6ea";
 	$("#search").focus();
 	$('#world-map').vectorMap(wrld);
   $("svg").css("backgroundColor", "#1cb6ea");
@@ -54,6 +55,7 @@ $(document).ready(function () {
     $("#fb-share-map").click(function(){
 
       var oSerializer = new XMLSerializer();
+      
       var sXML = oSerializer.serializeToString(document.querySelector("#world-map svg"));
 
       canvg(document.getElementById('canvas'), sXML,{ ignoreMouse: true, ignoreAnimation: true });
@@ -72,6 +74,10 @@ $(document).ready(function () {
 var wrld = {
   map: 'world_mill_en',
   regionStyle: {
+    initial: {
+        fill: "#eeeeee",
+        stroke: 'none'
+      },
   	selected: {
         fill: '#EC684E'
       },
@@ -133,7 +139,8 @@ window.fbAsyncInit = function() {
     if (response.status === 'connected') {
     	fb_id = response.authResponse.userID;
     	FB.api('/me', function(response) {
-	      $(".login").html(response.name + ' - <a href="javascript:logout()">log out</a>');
+	      //$(".login").html(response.name + ' - <a href="javascript:logout()">log out</a>');
+        $(".login").html(response.name);
 	      fb_name = response.name;
 	    });
 	    if(getParameterByName('logged')){
