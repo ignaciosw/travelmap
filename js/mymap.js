@@ -251,7 +251,7 @@ function get_friend_percentage(friend_fb_id){
 	var perc;
 	$.ajax({
 		url:'back/getcountries.php',
-		async: false,
+		async: true,
 		type: 'POST',
 		data:{'facebook_id':friend_fb_id},
 		success: function(data){
