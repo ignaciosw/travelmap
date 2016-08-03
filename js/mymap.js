@@ -3,6 +3,7 @@
 var mapObj;
 var continents = [];
 var image_data;
+var context;
 
 $(document).ready(function () {
   document.querySelector("canvas").style.fill = "#1cb6ea";
@@ -58,18 +59,64 @@ $(document).ready(function () {
       
       var sXML = oSerializer.serializeToString(document.querySelector("#world-map svg"));
 
-      canvg(document.getElementById('canvas'), sXML,{ ignoreMouse: true, ignoreAnimation: true });
-      var imgData = canvas.toDataURL("image/png");
-      
-      //send base64 data to server and create the png image
-      save_map_image(imgData);
-      
-      //share the image
-      
+      $.when(canvg(document.getElementById('canvas'), sXML,{ ignoreMouse: true, ignoreAnimation: true }))
+  .done(function(){
+        var c = document.querySelector("canvas");
+        context = c.getContext("2d");
+        //create base64 data and set background color
+        var imgData = canvasToImage("#1cb6ea");
+        //send base64 data to server and create the png image
+        save_map_image(imgData);
+      });
       
     });
 });
 
+//function to create png from canvas and add background color
+function canvasToImage(backgroundColor)
+{
+  //cache height and width    
+  var w = canvas.width;
+  var h = canvas.height;
+
+  var data;   
+
+  if(backgroundColor)
+  {
+    //get the current ImageData for the canvas.
+    data = context.getImageData(0, 0, w, h);
+    
+    //store the current globalCompositeOperation
+    var compositeOperation = context.globalCompositeOperation;
+
+    //set to draw behind current content
+    context.globalCompositeOperation = "destination-over";
+
+    //set background color
+    context.fillStyle = backgroundColor;
+
+    //draw background / rect on entire canvas
+    context.fillRect(0,0,w,h);
+  }
+
+  //get the image data from the canvas
+  var imageData = this.canvas.toDataURL("image/png");
+
+  if(backgroundColor)
+  {
+    //clear the canvas
+    context.clearRect (0,0,w,h);
+
+    //restore it with original / cached ImageData
+    context.putImageData(data, 0,0);    
+
+    //reset the globalCompositeOperation to what it was
+    context.globalCompositeOperation = compositeOperation;
+  }
+
+  //return the Base64 encoded data url string
+  return imageData;
+}
 
 var wrld = {
   map: 'world_mill_en',
@@ -251,7 +298,7 @@ function get_friend_percentage(friend_fb_id){
 	var perc;
 	$.ajax({
 		url:'back/getcountries.php',
-		async: true,
+		async: false,
 		type: 'POST',
 		data:{'facebook_id':friend_fb_id},
 		success: function(data){
