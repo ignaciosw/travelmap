@@ -26,6 +26,9 @@ $(document).ready(function () {
             }));
 
         },
+        open: function(event, ui) {
+        if(isMobile()) $('.ui-autocomplete').off('menufocus hover mouseover mouseenter');
+        },
         select: function(event, ui) {
 	        //mapObj.setSelectedRegions(ui.item.value);
           if(!mapObj.regions[ui.item.value].element.isSelected || mapObj.regions[ui.item.value].element.isSelected == undefined){
@@ -165,7 +168,7 @@ window.fbAsyncInit = function() {
     FB.init({
       appId      : '1702480320040341',
       xfbml      : true,
-      version    : 'v2.5'
+      version    : 'v2.6'
     });
   };
 
@@ -436,4 +439,12 @@ function get_session(){
 			count();
 		}
 	});
+}
+
+function isMobile(){
+  if( /Android|webOS|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent) ) {
+    return true;
+  }else{
+    return false;
+  }
 }

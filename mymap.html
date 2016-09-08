@@ -36,9 +36,9 @@
 			<div id="container">
 				<div id="header-left">
 					Start pinning countries!
-					<form class="search-box" action="">
+					<form class="search-box" action="" onkeypress="return event.keyCode != 13;">
 						<input type="search" class="search" id="search" placeholder="Country name" />
-						<button type="submit" class="submit" value="search">&nbsp;</button>
+						<button type="button" class="submit" value="search">&nbsp;</button>
 					</form>
 				</div>
 				<div id="header-right">

@@ -1,0 +1,65 @@
+<html>
+<head>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1702480320040341',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+</head>
+<body>
+<button id="liveButton" style="font-size:25px">Create Live Stream To Facebook</button>
+</body>
+
+<script>
+//setTimeout(show_likes('10154313931685837'), 1000);
+document.getElementById('liveButton').onclick = function() {
+  FB.ui({
+    display: 'popup',
+    method: 'live_broadcast',
+    phase: 'create',
+}, function(response) {
+    console.log(response);
+    if (!response.id) {
+      console.log('dialog canceled');
+      return;
+    }
+    
+    FB.ui({
+      display: 'popup',
+      method: 'live_broadcast',
+      phase: 'publish',
+      broadcast_data: response,
+    }, function(response) {
+    console.log("video status: \n" + response.status);
+    });
+    
+  });
+};
+
+function show_likes(id){
+  FB.api(
+      "/" + id + "/likes",
+      function (response) {
+        if (response && !response.error) {
+          console.log(response);
+        }
+      }
+  );
+}
+
+//10154313992035837?fields=live_views,reactions,comments,likes,status
+
+</script>
+</html>

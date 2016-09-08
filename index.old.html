@@ -30,20 +30,14 @@
 	</head>
 	<body>
 		<div id="fb-root"></div>
-			<script>(function(d, s, id) {
-				var js, fjs = d.getElementsByTagName(s)[0];
-				if (d.getElementById(id)) return;
-				js = d.createElement(s); js.id = id;
-				js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.5";
-				fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));</script>  
+  
 		<div id="wrapper">
 			<div id="container">
 				<div id="header-left">
 					Start pinning countries!
-					<form class="search-box" action="" onkeypress="return event.keyCode != 13;">
+					<form class="search-box" action="">
 						<input type="search" class="search" id="search" placeholder="Country name" />
-						<button class="button" value="search" onclick="return false;">&nbsp;</button>
+						<button class="submit" value="search" onclick="return false;">&nbsp;</button>
 					</form>
 				</div>
 				
@@ -79,7 +73,7 @@
 			<fb:login-button size="xlarge" scope="public_profile,email,user_friends" onlogin="checkLoginState();">Connect with Facebook to Save Map
 </fb:login-button>
 </div>
-			<div id="footer">TravelPins.World - All rights reserved 2016 - <a href="mailto:info@diegopen.com" class="footer">Contact</a> - <a href="terms-and-conditions.html" class="footer">Terms and conditions</a> and <a href="privacy.html" class="footer">Privacy</a></div>
+			<div id="footer">TravelPins.World - All rights reserved 2016 - <a href="mailto:info@diegopen.com" class="footer">Contact</a> - <a href="#" class="footer">Terms and conditions</a> and <a href="#" class="footer">Privacy</a></div>
 		</div>
 	</body>
 	<script>

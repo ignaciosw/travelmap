@@ -22,6 +22,9 @@ $(document).ready(function () {
             }));
 
         },
+        open: function(event, ui) {
+        if(isMobile()) $('.ui-autocomplete').off('menufocus hover mouseover mouseenter');
+        },
         select: function(event, ui) {
 	        mapObj.setSelectedRegions(ui.item.value);
 	        count();
